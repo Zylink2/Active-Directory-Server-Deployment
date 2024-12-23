@@ -64,6 +64,10 @@ Check for any prerequistite then install
 
 ![image](https://github.com/user-attachments/assets/a0251c05-0af5-4c72-bdc8-f9a4576d978e)
 
+![image](https://github.com/user-attachments/assets/269226a6-5450-4c35-91e1-0828103fb9a5)
+
+We got the domain account login prompt here when restart
+
 Now we're done with setting up the DC let's move on to setting the certificate signing for internal services
 
 ## Set up Certificate
