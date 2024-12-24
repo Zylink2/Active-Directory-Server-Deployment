@@ -70,5 +70,69 @@ We got the domain account login prompt here when restart
 
 Now we're done with setting up the DC let's move on to setting the certificate signing for internal services
 
-## Set up Certificate
+## Set up Certificate services
+We need to set this up in order to indentify identity of the DC and also for LDAPS for the security's sake
 
+Install the certificate service
+
+![image](https://github.com/user-attachments/assets/ae9a6a32-e9d2-44be-bf73-9428f283d73f)
+
+We need to configure AD service
+
+![image](https://github.com/user-attachments/assets/84810d6b-8045-47e5-84ff-d40c821dc5b2)
+
+![image](https://github.com/user-attachments/assets/cfa146d8-1fd4-412e-8318-13f4ef3a5c80)
+
+![image](https://github.com/user-attachments/assets/99b32355-ab50-43ed-a2fd-8d227ab38735)
+
+![image](https://github.com/user-attachments/assets/4b3e1a6c-ec4b-478e-b32a-c9130a6d9f50)
+
+![image](https://github.com/user-attachments/assets/864212ec-e542-4f19-8785-c83666658b20)
+
+we don't have any private key yet so we need to create a new one with SHA256 as a default and validity to 99 years so it doesn't get expired
+
+![image](https://github.com/user-attachments/assets/fbce75df-7dea-459a-a8c2-d3933c8d3021)
+
+![image](https://github.com/user-attachments/assets/b0c0bdc9-50d7-4dfa-b140-8cf000281d29)
+
+![image](https://github.com/user-attachments/assets/5378d5bf-a534-496f-958f-69ce988a272d)
+
+![image](https://github.com/user-attachments/assets/53d04926-f787-4599-ba21-2dbdee2cc2ce)
+
+Then hit configure to successfully configure the service
+
+![image](https://github.com/user-attachments/assets/1ee850a2-3232-4fd6-bfe2-35fb34dbd78f)
+
+# Set up user machine
+we will set up both of the machine using same iso file. One will be THEPUNISHER and another for SPIDERMAN
+after the initial set up we can use domain join account to sign up both of the machines instead of microsoft account
+
+![image](https://github.com/user-attachments/assets/86967b6b-6a4c-446f-9a8b-4f4893a6cd9e)
+
+The name of local account of PUNISHER machine is going to be "frankcastle"
+
+![image](https://github.com/user-attachments/assets/31e8f3ae-49bd-4c99-9214-80bd42a31066)
+
+As for SPIDERMAN, we'll be using "peterparker"
+
+![image](https://github.com/user-attachments/assets/56dbfd8a-e81d-4e25-9938-abae0422fcda)
+
+Both machines will use same password: **Password1**
+
+![image](https://github.com/user-attachments/assets/9d0d0a92-750e-4c30-a4d0-8ebc16259837)
+
+For all security questions for both machines can be anything and all of the answers we're setting is going to be just "bob"
+
+![image](https://github.com/user-attachments/assets/fc3066f2-6198-4fab-bcdb-8a05b68bb21b)
+
+select no for everything since we don't want to expose any of our machine information to the internet
+
+![image](https://github.com/user-attachments/assets/d5cb3845-675a-4520-9342-26ef2e1cefeb)
+
+After the installation for both machines completed, change the PC name to each of the name we assigned earlier
+
+![image](https://github.com/user-attachments/assets/9dcc0879-5ccc-4710-927a-bc97ddce5d62)
+
+![image](https://github.com/user-attachments/assets/fc72122d-a10c-433a-a314-0200cce48fe4)
+
+And we're done with setting up machine
