@@ -17,5 +17,4 @@ The project aimed to build AD DS which can be used to establish a controlled env
 - Oracle Virtual Box
 
 ## <a href='https://github.com/Zylink2/Active-Directory-Server-Deployment/blob/main/Lab_setup.md'>Lab Setup</a>
-
-
+## Attacking Active Directory
