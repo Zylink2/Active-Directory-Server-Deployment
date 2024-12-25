@@ -1,5 +1,3 @@
-![image](https://github.com/user-attachments/assets/150a24ba-aa93-427d-b1b3-bbeba43e9a56)# Active-Directory-Server-Deployment
-
 ## Objective
 
 The project aimed to build AD DS which can be used to establish a controlled environment for simulating and detecting cyber attacks. The primary focus was to understanding components of Active Directory, generating test telemetry to mimic real-world attack scenarios. This hands-on experience was designed to deepen understanding of network security, attack patterns, and defensive strategies.
