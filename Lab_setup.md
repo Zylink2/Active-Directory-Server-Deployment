@@ -320,14 +320,13 @@ And we are all set for the attack!
 
 # Accounts we have includes
 ## Domain Account
-
-Domain admin (Built-in) - Administrator:P@$$w0rd!
-Domain admin - tstark:Password12345!
-SQL Service w/ admin privilege - SQLService:MYpassword123#
-Low level user - fcastle:Password1
-Low level user - pparker:Password2
+Domain admin (Built-in) - Administrator:P@$$w0rd!<br>
+Domain admin - tstark:Password12345!<br>
+SQL Service w/ admin privilege - SQLService:MYpassword123#<br>
+Low level user - fcastle:Password1<br>
+Low level user - pparker:Password2<br>
 
 ## Local Account
 
-THEPUNISHER - frankcastle:Password1
-SPIDERMAN - peterparker:Password1
+THEPUNISHER - frankcastle:Password1<br>
+SPIDERMAN - peterparker:Password1<br>
