@@ -319,7 +319,7 @@ we should see the share drive on the machine here which is login under DC admin 
 And we are all set for the attack!
 
 # Accounts we have includes
-##Domain Account
+## Domain Account
 
 Domain admin (Built-in) - Administrator:P@$$w0rd!
 Domain admin - tstark:Password12345!
@@ -327,7 +327,7 @@ SQL Service w/ admin privilege - SQLService:MYpassword123#
 Low level user - fcastle:Password1
 Low level user - pparker:Password2
 
-##Local Account
+## Local Account
 
 THEPUNISHER - frankcastle:Password1
 SPIDERMAN - peterparker:Password1
