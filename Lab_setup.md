@@ -299,6 +299,7 @@ Let's do the same thing with SPIDERMAN machine, the same password as well: **Pas
 Now, logout of SPIDERMAN machine as admin and try to sign in with local peterparker account with the local user password: Password1
 
 ![image](https://github.com/user-attachments/assets/c3997407-fc35-4482-b45a-1ce800dfa6be)
+
 (we need to specify to the machine that we will sign in as local account that's why the .\ is needed or else the machine will think that we want to sign in using domain account)
 
 we want to map the share to this machine
