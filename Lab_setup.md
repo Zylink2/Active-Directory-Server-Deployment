@@ -323,10 +323,10 @@ And we are all set for the attack!
 Domain admin (Built-in) - Administrator:P@$$w0rd!<br>
 Domain admin - tstark:Password12345!<br>
 SQL Service w/ admin privilege - SQLService:MYpassword123#<br>
-Low level user - fcastle:Password1<br>
-Low level user - pparker:Password2<br>
+Low level user - fcastle:Password1 (have admin privilege on both machines since it got added into local admin group for both machines)<br>
+Low level user - pparker:Password2 (have admin privilege on just SPIDERMAN machine since it got added into local admin group on that machine)<br>
 
 ## Local Account
-
+Administrator (both machines) - administrator:Password1!
 THEPUNISHER - frankcastle:Password1<br>
 SPIDERMAN - peterparker:Password1<br>
