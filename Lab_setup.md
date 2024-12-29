@@ -12,7 +12,7 @@ Low level user - fcastle:Password1 (have admin privilege on both machines since 
 Low level user - pparker:Password2 (have admin privilege on just SPIDERMAN machine since it got added into local admin group on that machine)<br>
 
 ## Local Account
-Administrator (both machines) - administrator:Password1!
+Administrator (both machines) - administrator:Password1!<br>
 THEPUNISHER - frankcastle:Password1<br>
 SPIDERMAN - peterparker:Password1<br>
 
