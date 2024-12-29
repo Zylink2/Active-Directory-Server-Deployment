@@ -3,6 +3,19 @@ Download ISO files for Window Server 2022 and Window Client from Microsoft websi
 
 ![image](https://github.com/user-attachments/assets/dcd33b4b-195c-4274-a8d4-ae6ea9fa42ac)
 
+# Sum up Accounts we have created (This part is intended to be a recap after all steps completed)
+## Domain Account
+Domain admin (Built-in) - Administrator:P@$$w0rd!<br>
+Domain admin - tstark:Password12345!<br>
+SQL Service w/ admin privilege - SQLService:MYpassword123#<br>
+Low level user - fcastle:Password1 (have admin privilege on both machines since it got added into local admin group for both machines)<br>
+Low level user - pparker:Password2 (have admin privilege on just SPIDERMAN machine since it got added into local admin group on that machine)<br>
+
+## Local Account
+Administrator (both machines) - administrator:Password1!
+THEPUNISHER - frankcastle:Password1<br>
+SPIDERMAN - peterparker:Password1<br>
+
 # Set up DC
 
 After run an inial set up for Windows server 2022, we will set admin password to something weak like: **P@$$w0rd!**
@@ -317,16 +330,3 @@ we should see the share drive on the machine here which is login under DC admin 
 ![image](https://github.com/user-attachments/assets/31a7b093-cdd0-47a5-88cb-b9adcec1ad84)
 
 And we are all set for the attack!
-
-# Accounts we have includes
-## Domain Account
-Domain admin (Built-in) - Administrator:P@$$w0rd!<br>
-Domain admin - tstark:Password12345!<br>
-SQL Service w/ admin privilege - SQLService:MYpassword123#<br>
-Low level user - fcastle:Password1 (have admin privilege on both machines since it got added into local admin group for both machines)<br>
-Low level user - pparker:Password2 (have admin privilege on just SPIDERMAN machine since it got added into local admin group on that machine)<br>
-
-## Local Account
-Administrator (both machines) - administrator:Password1!
-THEPUNISHER - frankcastle:Password1<br>
-SPIDERMAN - peterparker:Password1<br>
