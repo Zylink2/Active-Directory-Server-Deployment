@@ -234,4 +234,133 @@ This user was actually created on the DC - CkJzjKxCCM:r>)rZhsgUn(y8*<
 
 ![image](https://github.com/user-attachments/assets/5999e53f-dd03-4a37-ab12-11626aac2cd7)
 
+Credit graphic from: <a href='https://academy.tcm-sec.com/'>TCM academy</a>
+
 We can set the blocks instead of disable them. Best practice is to disable WPAD & WIN proxy, LDAP signing to confirm that it's actually you not someone relaying
+
+# Domain Enumeration
+## ldapdomaindump
+we can dump a bunch of info about the DC from this syntax
+
+```
+sudo ldapdomaindump ldaps://192.168.85.156 -u 'MARVEL\fcastle' -p 'Password1'
+```
+
+![image](https://github.com/user-attachments/assets/e8a85cd2-5ecc-43ed-b8ac-c0af04348962)
+
+![image](https://github.com/user-attachments/assets/bf1aeee2-7997-49f1-82c1-c7a2e8cf99f3)
+
+## BloodHound
+Before start, make sure that bloodhound and neo4j is up to date by doing 
+
+```
+sudo pip3 install bloodhound
+sudo apt install neo4j
+```
+In this case I'll just run it in venv since I can't install on normal env
+
+```
+python3 -m venv ~/venvs/bloodhound-env
+source ~/venvsbloodhound-env/bin/activate
+pip3 install bloodhound
+deactivate
+```
+
+![image](https://github.com/user-attachments/assets/43347024-aa91-46ff-a525-db100eefe176)
+
+Whenever I need to use bloodhound I'll call directly from the binary on my machine but as for bloodhound-python, I'll call it from venv environment
+
+```
+bloodhound-env/bin/bloodhound-python -h
+```
+
+![image](https://github.com/user-attachments/assets/a4abf516-cd1f-4699-aa75-1ba6eef35264)
+
+Then start a neo4j console which will give us ip to a remote console
+
+![image](https://github.com/user-attachments/assets/47f2fc75-26fa-4801-8d71-29da4c2c78c0)
+
+When first login to the page, it'll prompt for username and password it's neo4j:neo4j
+
+![image](https://github.com/user-attachments/assets/a162d4b7-930a-4c60-8040-818c5301d491)
+
+It'll prompt for a new password I'll go with **neo4j1**
+
+![image](https://github.com/user-attachments/assets/43ceab1c-554b-4b5e-8975-dda15877412c)
+
+Then we can fire off bloodhound
+
+```
+sudo bloodhound
+```
+
+![image](https://github.com/user-attachments/assets/165cdefe-dc25-4265-adea-78a9603a866a)
+
+enter the username and password we just created **neo4j:neo4j1**
+
+![image](https://github.com/user-attachments/assets/f4c9597c-b988-429c-bfbf-e5facd787355)
+
+We need to collect data that can be used here using ingester
+
+```
+bloodhound-env/bin/bloodhound-python -d MARVEL.local -u fcastle -p Password1 -ns <DC IP> -c all 
+```
+
+-ns = name server
+-c = data collect which we'll collect all data
+
+![image](https://github.com/user-attachments/assets/394c946d-0cd0-4234-939b-da5087f06b72)
+
+We ran the scan and get a bunch of files here which we need to import into the bloodhound
+
+![image](https://github.com/user-attachments/assets/4cb39731-10ed-4c7f-bdf6-2e734ff5dfd9)
+
+We'll import all the files into bloodhound
+
+![image](https://github.com/user-attachments/assets/63ebec7b-a637-4ee2-b98e-acc46601c599)
+
+![image](https://github.com/user-attachments/assets/5b573d28-4f14-46d9-82cf-ce06c1b8938f)
+
+We can check whether the info is sucessfully imported by checking database info which we have some data here and check the analysis
+
+![image](https://github.com/user-attachments/assets/3638fb9a-60e1-4932-b0bd-6647c2f81b03)
+
+We can see the graphical display of all domain admins
+
+![image](https://github.com/user-attachments/assets/9627e8dd-a909-4b0f-a82d-e874bea02523)
+
+## Plumhound
+I install it inside the virtual env once again but without the env activation
+```
+sudo python3 -m venv /opt/AD_attack/PlumHound/venv
+sudo /opt/AD_attack/PlumHound/venv/bin/pip install -r /opt/AD_attack/PlumHound/requirements.txt
+```
+Using Plumhound.py
+```
+sudo /opt/AD_attack/PlumHound/venv/bin/python /opt/AD_attack/PlumHound/PlumHound.py
+```
+Let's test if this works (Make sure that bloodhound is up and running since we will pull info from that and analyse the data inside bloodhound
+```
+sudo /opt/AD_attack/PlumHound/venv/bin/python /opt/AD_attack/PlumHound/PlumHound.py --easy -p neo4j1
+```
+We should be able to see the task here
+
+![image](https://github.com/user-attachments/assets/2cbf8b20-df3d-4529-974a-7067ae32930e)
+
+Let's create a report of the default tasks
+
+```
+sudo /opt/AD_attack/PlumHound/venv/bin/python /opt/AD_attack/PlumHound/PlumHound.py -x tasks/default.tasks -p neo4j1
+```
+
+![image](https://github.com/user-attachments/assets/efa6a27d-aad5-46d2-9fb5-67148ceb2d2c)
+
+![image](https://github.com/user-attachments/assets/07c388c6-3d28-4ed9-92d9-05558df9e9bb)
+
+We can check the index.html to see comprehensive report
+
+![image](https://github.com/user-attachments/assets/b6a2bf7a-e3c7-4d33-86de-a82155b8243d)
+
+# Pass Attacks
+
+
