@@ -362,5 +362,8 @@ We can check the index.html to see comprehensive report
 ![image](https://github.com/user-attachments/assets/b6a2bf7a-e3c7-4d33-86de-a82155b8243d)
 
 # Pass Attacks
+Let's try with crackmapexec to pass the credential of fcastle to see which machine that we have local admin privilege, see that there are 2 machines which includes THEPUNISHER and SPIDERMAN are successfully autenticate but not for HYDRA-DC since we have a valid cred that can login to that machine but we're not local admin on that DC
 
+![image](https://github.com/user-attachments/assets/6610db3c-d93a-4906-880e-469153a50985)
 
+Now that we can access to these machines we want to dump out information using secretdumps
