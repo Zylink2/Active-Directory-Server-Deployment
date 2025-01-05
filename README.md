@@ -10,7 +10,7 @@ The project aimed to build AD DS which can be used to establish a controlled env
 
 - Better understanding in Active Directory in the internal network.
 - Engagement with Group policies.
-- Development of critical thinking and problem-solving skills in cybersecurity.
+- Development of real world Active Directory attacks in penetration testing.
 
 ### Tool Used
 
@@ -19,6 +19,3 @@ The project aimed to build AD DS which can be used to establish a controlled env
 ## Stages
 ### <a href='https://github.com/Zylink2/Active-Directory-Server-Deployment/blob/main/Lab_setup.md'>Lab Setup</a>
 ### <a href='https://github.com/Zylink2/Active-Directory-Server-Deployment/blob/main/Attacking_Active_Directory.md'>Attacking Active Directory</a>
-(ongoing)
-### Addtional Attacks
-(pending...)
