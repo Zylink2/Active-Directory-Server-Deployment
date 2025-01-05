@@ -7,6 +7,7 @@ Download ISO files for Window Server 2022 and Window Client from Microsoft websi
 ## Domain Account
 Domain admin (Built-in) - Administrator:P@$$w0rd!<br>
 Domain admin - tstark:Password12345!<br>
+Domain admin (added during attack) - hawkeye:Password1@<br>
 SQL Service w/ admin privilege - SQLService:MYpassword123#<br>
 Low level user - fcastle:Password1 (have admin privilege on both machines since it got added into local admin group for both machines)<br>
 Low level user - pparker:Password2 (have admin privilege on just SPIDERMAN machine since it got added into local admin group on that machine)<br>
