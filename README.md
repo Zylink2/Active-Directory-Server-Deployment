@@ -3,8 +3,8 @@
 The project aimed to build AD DS which can be used to establish a controlled environment for simulating and detecting cyber attacks. The primary focus was to understanding components of Active Directory, generating test telemetry to mimic real-world attack scenarios. This hands-on experience was designed to deepen understanding of network security, attack patterns, and defensive strategies.
 
 ### Note
-1. No antivirus is run on the domain. This is just a basic simulation of the AD attack which will be picking up by antivirus
-2. Local admin here is enabled. In most cases, best practice is to disable it
+1. No antivirus is run on the domain. This is just a basic simulation of the AD attack which will be picking up by antivirus.
+2. Local admin here is enabled. In most cases, best practice is to disable it.
 
 ### Skills Learned
 
