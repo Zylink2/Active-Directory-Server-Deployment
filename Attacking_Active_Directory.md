@@ -614,9 +614,74 @@ We saw domain admin password stores in cred manager here. Recall that we have a 
 
 # Dumping the NTDS.dit
 
+![image](https://github.com/user-attachments/assets/26f96024-ed4b-4c4f-9f72-27c8f88ada16)
 
+when we use secretsdump to the DC earlier with hawkeye cred we got all infos here but in this attack we just want the ntds so we can specify the -just-dc-ntlm flag
 
+```
+secretsdump.py MARVEL.local/hawkeye:'Password1@'@192.168.85.156 -just-dc-ntlm
+```
 
+![image](https://github.com/user-attachments/assets/658f5520-1f8b-462b-8839-b7d7c31e97c8)
 
+## Trick to retrieve the nt part
+We need to copy these to excel
+![image](https://github.com/user-attachments/assets/aaa5dacb-e626-437b-8675-beb4b52c35b1)
 
+![image](https://github.com/user-attachments/assets/09830982-a0c2-4e18-bd91-e32d08d1864f)
 
+Then we should have the column with nt hash for us
+
+![image](https://github.com/user-attachments/assets/3bf27c41-2a99-4c82-b47d-4982e9d6066e)
+
+Paste the hashes into a file and run hashcat for cracking passwords
+
+![image](https://github.com/user-attachments/assets/17dd72f2-fdd3-4fd6-b396-462db2450207)
+
+Crack the passwords and print them out using show flag and copy them to excel
+
+![image](https://github.com/user-attachments/assets/4d856c03-22a1-480d-b40e-34e58f447220)
+
+Paste these passwords to the new tab and clean the delimeter like we did before and convert all passwords to text
+
+![image](https://github.com/user-attachments/assets/7f0b3992-b83c-42ff-acd4-432041a1a18b)
+
+![image](https://github.com/user-attachments/assets/6c99a18b-b73c-4211-8cf9-7e843979226a)
+
+We'll use vlookup to help identify which password belongs to whom
+
+![image](https://github.com/user-attachments/assets/bee4d6e2-2652-4477-8d16-3d945bd6191c)
+
+PC passwords are not important to us so we can focuss on user passwords
+
+# Golden Ticket Attacks
+Now we can access to all machines and get to all files and folders
+We need to run mimikatz but this time, instead of dumping all the creds for all users, we'll focus on just krbtgt service account
+
+```
+mimikatz.exe
+privilege::debug
+lsadump::lsa /inject /name:krbtgt
+```
+
+![image](https://github.com/user-attachments/assets/42f50f31-61e9-4335-af0c-75bbd65ed943)
+
+Take note of the following information:
+- SID: S-1-5-21-436050373-151451544-503733581
+- NTLM: 565445f121a3759f3ab8d696fe657930
+
+![image](https://github.com/user-attachments/assets/0880e134-911c-4fba-9a68-7eca64073fcd)
+
+Now we can forge a ticket which the user can be anything that's not real but in this case i'll keep it simple and go with administrotor but the domain has to be real then paste the sid and krbtgt account hash we collected and add the RID for admin account of 500 and ptt for pass the ticket
+
+We will generate the ticket and pass to the next session or current session and utilize the ticket to open command prompt and access any computer we want. See below that we can list the content of c share on THEPUNISHER machine
+
+![image](https://github.com/user-attachments/assets/262ca513-3177-4531-95cb-ff24237be3be)
+
+We can download psexec to get access to shell on other machines
+
+![image](https://github.com/user-attachments/assets/59a87fde-d050-4826-89e3-ff41d782df7a)
+
+Or even go with silver ticket since it's more steathy than golden ticket (most likely to be catched)
+
+And that's the end of this lab
